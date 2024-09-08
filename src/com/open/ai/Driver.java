@@ -6,20 +6,37 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Properties;
+import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.open.ai.config.OpenAIKeyConfig;
 
 public class Driver {
 
 	public static void main(String[] args) {
-		System.out.println(chatGPT(""));
+		
+		Scanner scan  = new Scanner(System.in);
+		StringBuffer userInput = new StringBuffer();
+		String text;
+		while((text=scan.nextLine()) != null){
+			if(text.isEmpty()) {
+				break;
+			}
+			userInput.append(text);
+		}
+		scan.close();
+		System.out.println(chatGPT(userInput.toString()));
 
 	}
 
 	private static String chatGPT(String string) {
-		String apiKey = "";
-		String gptUrl = "https://api.openai.com/v1/chat/completions";
-		String model = "gpt-4o";
+		Properties properties = OpenAIKeyConfig.getProperties();
+        String apiKey = properties.getProperty("apiKey");
+        String gptUrl = properties.getProperty("gptUrl");
+        String model = properties.getProperty("model");
+		
 		try {
 			URL url = new URL(gptUrl);
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
